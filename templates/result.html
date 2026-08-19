@@ -318,7 +318,12 @@
                         <td>{{ loop.index }}</td>
                         <td>₹{{ format_currency(price) }}</td>
                         <td>
-                            {% set diff = ((result.prediction.predicted_price - price) / price * 100)|round(1) %}
+                            {% if result.type == 'product' %}
+                                {% set base = result.prediction.predicted_price %}
+                            {% else %}
+                                {% set base = result.prediction.predicted_monthly_price %}
+                            {% endif %}
+                            {% set diff = ((base - price) / price * 100)|round(1) %}
                             {% if diff > 0 %}
                                 <span style="color: #e65100;">+{{ diff }}%</span>
                             {% else %}

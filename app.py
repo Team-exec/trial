@@ -5,16 +5,19 @@ Uses Enhanced AI Model for accurate price predictions.
 """
 
 import sys
-sys.path.insert(0, 'src')
+import os
+
+app_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(app_root, 'src'))
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import pandas as pd
 import json
-import os
 from datetime import datetime
 from enhanced_model import EnhancedPriceModel
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(app_root, 'templates'),
+            static_folder=os.path.join(app_root, 'static'))
 app.secret_key = os.urandom(24)
 
 # Initialize model
