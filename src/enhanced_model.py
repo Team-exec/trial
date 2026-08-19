@@ -339,7 +339,8 @@ class EnhancedPriceModel:
     def get_recommendation(self, prediction, budget=None):
         """Generate price recommendation."""
         price = prediction.get('predicted_price') or prediction.get('predicted_monthly_price', 0)
-        
+        confidence = prediction.get('confidence', 75)
+
         recommendation = {
             'recommended_price': round(price, 2),
             'price_range': {
@@ -348,20 +349,60 @@ class EnhancedPriceModel:
                 'average': round(price, 2)
             },
             'price_reasonable': True,
-            'suggestions': []
+            'suggestions': [],
+            'confidence_level': 'High' if confidence >= 80 else 'Medium' if confidence >= 65 else 'Low',
+            'risk_factors': [],
+            'approval_level': '',
+            'negotiation_margin': round(price * 0.10, 2),
+            'benchmark_comparison': '',
         }
-        
+
+        if price > 1000000:
+            recommendation['approval_level'] = 'Requires Secretary-level approval (above ₹10 lakh)'
+        elif price > 500000:
+            recommendation['approval_level'] = 'Requires Joint Secretary-level approval (above ₹5 lakh)'
+        elif price > 100000:
+            recommendation['approval_level'] = 'Requires Under Secretary-level approval (above ₹1 lakh)'
+        else:
+            recommendation['approval_level'] = 'Delegated financial powers sufficient'
+
+        if confidence >= 80:
+            recommendation['benchmark_comparison'] = 'Predicted price is well-aligned with market benchmarks.'
+        elif confidence >= 65:
+            recommendation['benchmark_comparison'] = 'Predicted price is reasonably aligned with market benchmarks. Verify with at least 2-3 vendor quotes.'
+        else:
+            recommendation['benchmark_comparison'] = 'Limited market data available for this item. Obtain multiple vendor quotations for validation.'
+
+        if confidence < 65:
+            recommendation['risk_factors'].append('Low model confidence — limited historical data for this item category.')
+        if price > 500000:
+            recommendation['risk_factors'].append('High-value procurement — ensure compliance with GFR 2017 guidelines.')
+        if price > 1000000:
+            recommendation['risk_factors'].append('Mandatory e-tendering required for procurement above ₹10 lakh.')
+        if price > 200000:
+            recommendation['risk_factors'].append('At least 3 comparative quotations recommended.')
+
         if budget and price > budget:
             recommendation['price_reasonable'] = False
             recommendation['suggestions'].append(
                 f"Price exceeds budget by ₹{price - budget:,.2f}. Consider negotiating or exploring alternatives."
             )
-        
+
         if price > 500000:
             recommendation['suggestions'].append(
                 "High-value procurement. Ensure proper administrative approval and multiple vendor quotes."
             )
-        
+
+        if confidence < 70:
+            recommendation['suggestions'].append(
+                "Model confidence is moderate. Cross-verify with GeM portal pricing and recent L1 bids."
+            )
+
+        if not recommendation['suggestions']:
+            recommendation['suggestions'].append(
+                "Price falls within expected market range. Safe to proceed with procurement."
+            )
+
         return recommendation
     
     def save_model(self, filepath='enhanced_price_model.pkl'):
