@@ -3,189 +3,776 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Benchmarking System - Login</title>
+    <title>Price Benchmarking System - Government Procurement Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            background-color: #f0f2f5;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            color: #1a1a2e;
         }
-        
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+
+        /* Subtle background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 400px;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(25, 60, 120, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 20%, rgba(25, 60, 120, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(25, 60, 120, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+
+        /* ===== HEADER ===== */
+        .gov-header {
+            background: #ffffff;
+            border-bottom: 3px solid #1a3c78;
+            padding: 0;
+            position: relative;
+            z-index: 10;
         }
-        
-        .header h1 {
-            color: #1a237e;
-            font-size: 24px;
-            margin-bottom: 10px;
+
+        .gov-header-top {
+            background: #1a3c78;
+            padding: 6px 0;
         }
-        
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .tabs {
+
+        .gov-header-top .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        .tab {
+
+        .gov-header-top .header-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .gov-header-top .header-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .gov-header-top .header-links a:hover {
+            color: #ffffff;
+        }
+
+        .gov-header-top .header-right {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .gov-header-main {
+            padding: 16px 0;
+        }
+
+        .gov-header-main .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .emblem {
+            width: 60px;
+            height: 60px;
+            background: #1a3c78;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .emblem i {
+            color: #ffffff;
+            font-size: 26px;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a3c78;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .header-text .portal-subtitle {
+            font-size: 13px;
+            color: #5a6577;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .header-text .portal-tagline {
+            font-size: 11px;
+            color: #8c95a6;
+            margin-top: 1px;
+            letter-spacing: 0.2px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
             flex: 1;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            color: #666;
-            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
         }
-        
-        .tab.active {
-            color: #1a237e;
-            border-bottom: 2px solid #1a237e;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-        
-        .form-group input {
+
+        .auth-wrapper {
+            display: flex;
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
+            max-width: 960px;
+            min-height: 480px;
+            background: #ffffff;
             border-radius: 4px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e0e4ea;
+        }
+
+        /* Left branding panel */
+        .auth-branding {
+            width: 42%;
+            background: #1a3c78;
+            padding: 48px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #ffffff;
+            position: relative;
+        }
+
+        .auth-branding::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.03) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .auth-branding .brand-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+
+        .auth-branding .brand-icon i {
+            font-size: 24px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .auth-branding h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-branding p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-features {
+            margin-top: 36px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-features .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .brand-features .feature-item i {
             font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #1a237e;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #1a237e;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn:hover {
-            background: #0d47a1;
-        }
-        
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            color: rgba(255,255,255,0.5);
+            width: 18px;
             text-align: center;
         }
-        
-        .form-container {
+
+        .brand-features .feature-item span {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Right auth panel */
+        .auth-panel {
+            flex: 1;
+            padding: 40px 40px 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-panel-header {
+            margin-bottom: 28px;
+        }
+
+        .auth-panel-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .auth-panel-header p {
+            font-size: 13px;
+            color: #7a8299;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid #e8ebf0;
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            padding: 10px 0;
+            margin-right: 32px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #7a8299;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            user-select: none;
+        }
+
+        .auth-tab:hover {
+            color: #1a3c78;
+        }
+
+        .auth-tab.active {
+            color: #1a3c78;
+            border-bottom-color: #1a3c78;
+        }
+
+        /* Error message */
+        .error-msg {
+            background: #fdf2f2;
+            color: #9b2c2c;
+            border: 1px solid #f5c6c6;
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-msg i {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Form */
+        .auth-form {
             display: none;
         }
-        
-        .form-container.active {
+
+        .auth-form.active {
             display: block;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3a3f4b;
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i.field-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #9ba3b5;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px 10px 38px;
+            border: 1px solid #d4d8e1;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #1a1a2e;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a3c78;
+            box-shadow: 0 0 0 3px rgba(26, 60, 120, 0.08);
+            background: #ffffff;
+        }
+
+        .form-group input::placeholder {
+            color: #a0a8b9;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ba3b5;
+            font-size: 14px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: #5a6577;
+        }
+
+        .form-extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #5a6577;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: #1a3c78;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: #1a3c78;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 11px 16px;
+            background: #1a3c78;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .auth-btn:hover {
+            background: #14305f;
+        }
+
+        .auth-btn:active {
+            background: #0f2548;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #eef0f4;
+            font-size: 13px;
+            color: #7a8299;
+        }
+
+        .auth-switch a {
+            color: #1a3c78;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== FOOTER ===== */
+        .gov-footer {
+            background: #ffffff;
+            border-top: 1px solid #e0e4ea;
+            padding: 16px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-left {
+            font-size: 12px;
+            color: #7a8299;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            font-size: 12px;
+            color: #7a8299;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #1a3c78;
+            text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .gov-header-top .header-links {
+                display: none;
+            }
+
+            .gov-header-main .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .emblem {
+                width: 50px;
+                height: 50px;
+            }
+
+            .emblem i {
+                font-size: 22px;
+            }
+
+            .header-text h1 {
+                font-size: 18px;
+            }
+
+            .auth-wrapper {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .auth-branding {
+                width: 100%;
+                padding: 28px 24px;
+            }
+
+            .auth-branding h2 {
+                font-size: 17px;
+            }
+
+            .brand-features {
+                display: none;
+            }
+
+            .auth-panel {
+                padding: 28px 24px 24px;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .auth-panel {
+                padding: 24px 16px 20px;
+            }
+
+            .auth-panel-header h3 {
+                font-size: 18px;
+            }
+
+            .form-extras {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Price Benchmarking System</h1>
-            <p>Government Procurement Tool</p>
+
+    <!-- Government Header -->
+    <header class="gov-header">
+        <div class="gov-header-top">
+            <div class="header-container">
+                <div class="header-links">
+                    <a href="#">Government of India</a>
+                    <a href="#">Ministry of Finance</a>
+                </div>
+                <div class="header-right">Official Use Only</div>
+            </div>
         </div>
-        
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-        
-        <div class="tabs">
-            <div class="tab active" onclick="showForm('login')">Login</div>
-            <div class="tab" onclick="showForm('register')">Register</div>
+        <div class="gov-header-main">
+            <div class="header-container">
+                <div class="emblem">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Price Benchmarking System</h1>
+                    <div class="portal-subtitle">Government Procurement Portal</div>
+                    <div class="portal-tagline">Centralized Automated Solution for Price Estimation &amp; Reasonability</div>
+                </div>
+            </div>
         </div>
-        
-        <div id="login-form" class="form-container active">
-            <form method="POST" action="/login">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" required>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="auth-wrapper">
+
+            <!-- Left Branding Panel -->
+            <div class="auth-branding">
+                <div class="brand-icon">
+                    <i class="fas fa-shield-halved"></i>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" required>
+                <h2>Secure Government<br>Procurement Platform</h2>
+                <p>AI-powered price estimation and benchmarking tool for transparent and efficient government procurement processes.</p>
+                <div class="brand-features">
+                    <div class="feature-item">
+                        <i class="fas fa-circle-check"></i>
+                        <span>ML-powered price predictions</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-circle-check"></i>
+                        <span>Vendor &amp; location analytics</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-circle-check"></i>
+                        <span>Market trend monitoring</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-circle-check"></i>
+                        <span>Multi-source benchmarking</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
+            </div>
+
+            <!-- Right Auth Panel -->
+            <div class="auth-panel">
+                <div class="auth-panel-header">
+                    <h3>Welcome</h3>
+                    <p>Sign in to access the procurement dashboard</p>
+                </div>
+
+                <!-- Error Message (Jinja2) -->
+                {% if error %}
+                <div class="error-msg">
+                    <i class="fas fa-circle-exclamation"></i>
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <!-- Tabs -->
+                <div class="auth-tabs">
+                    <div class="auth-tab active" onclick="showForm('login')">Login</div>
+                    <div class="auth-tab" onclick="showForm('register')">Register</div>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active" method="POST" action="/login">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user field-icon"></i>
+                            <input type="text" id="login-username" name="username" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('login-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-extras">
+                        <label class="remember-me">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="auth-btn">Sign In</button>
+                    <div class="auth-switch">
+                        Don't have an account? <a href="javascript:void(0)" onclick="showForm('register')">Create Account</a>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" method="POST" action="/register">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user field-icon"></i>
+                            <input type="text" id="reg-username" name="username" placeholder="Choose a username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope field-icon"></i>
+                            <input type="email" id="reg-email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input type="password" id="reg-password" name="password" placeholder="Create a password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('reg-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-confirm-password">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input type="password" id="reg-confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('reg-confirm-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn">Create Account</button>
+                    <div class="auth-switch">
+                        Already have an account? <a href="javascript:void(0)" onclick="showForm('login')">Sign In</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        
-        <div id="register-form" class="form-container">
-            <form method="POST" action="/register">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" name="confirm_password" required>
-                </div>
-                <button type="submit" class="btn">Register</button>
-            </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gov-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                &copy; 2026 Price Benchmarking System &mdash; Government Procurement Portal
+            </div>
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms &amp; Conditions</a>
+            </div>
         </div>
-    </div>
-    
+    </footer>
+
     <script>
         function showForm(type) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.form-container').forEach(form => form.classList.remove('active'));
-            
+            document.querySelectorAll('.auth-tab').forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.auth-form').forEach(function(form) {
+                form.classList.remove('active');
+            });
+
             if (type === 'login') {
-                document.querySelector('.tab:first-child').classList.add('active');
+                document.querySelector('.auth-tab:first-child').classList.add('active');
                 document.getElementById('login-form').classList.add('active');
             } else {
-                document.querySelector('.tab:last-child').classList.add('active');
+                document.querySelector('.auth-tab:last-child').classList.add('active');
                 document.getElementById('register-form').classList.add('active');
             }
         }
+
+        function togglePassword(inputId, btn) {
+            var input = document.getElementById(inputId);
+            var icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
+
 </body>
 </html>
