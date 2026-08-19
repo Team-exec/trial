@@ -6,6 +6,7 @@ Uses Enhanced AI Model for accurate price predictions.
 
 import sys
 import os
+import configparser
 
 app_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(app_root, 'src'))
@@ -19,6 +20,8 @@ from enhanced_model import EnhancedPriceModel
 app = Flask(__name__, template_folder=os.path.join(app_root, 'templates'),
             static_folder=os.path.join(app_root, 'static'))
 app.secret_key = os.urandom(24)
+
+USERS_FILE = os.path.join(app_root, 'users.ini')
 
 # Initialize model
 model = EnhancedPriceModel()
@@ -69,11 +72,35 @@ def load_model():
     except FileNotFoundError:
         return False
 
-# Sample user database
-users_db = {
-    'admin': {'password': 'admin123', 'role': 'admin'},
-    'user1': {'password': 'user123', 'role': 'user'}
-}
+def load_users():
+    config = configparser.ConfigParser()
+    users = {}
+    if os.path.exists(USERS_FILE):
+        config.read(USERS_FILE)
+        for username in config.sections():
+            users[username] = {
+                'password': config.get(username, 'password'),
+                'role': config.get(username, 'role')
+            }
+    if not users:
+        users = {
+            'admin': {'password': 'admin123', 'role': 'admin'},
+            'user1': {'password': 'user123', 'role': 'user'}
+        }
+        save_users(users)
+    return users
+
+def save_users(users):
+    config = configparser.ConfigParser()
+    for username, data in users.items():
+        config[username] = {
+            'password': data['password'],
+            'role': data['role']
+        }
+    with open(USERS_FILE, 'w') as f:
+        config.write(f)
+
+users_db = load_users()
 
 @app.route('/')
 def index():
@@ -107,6 +134,7 @@ def register():
         return render_template('login.html', error='Passwords do not match')
     
     users_db[username] = {'password': password, 'role': 'user'}
+    save_users(users_db)
     session['username'] = username
     session['role'] = 'user'
     session['query_history'] = []
