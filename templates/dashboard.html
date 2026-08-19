@@ -169,13 +169,161 @@
                 <h3>Query History</h3>
                 <p>View your past price predictions and recommendations for reference and comparison.</p>
             </a>
-            
-            <div class="action-card">
-                <div class="icon">💡</div>
-                <h3>Price Reasonability</h3>
-                <p>Verify if quoted prices are reasonable based on historical data and AI analysis.</p>
+        </div>
+
+        <div class="card" style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 30px;">
+            <h2 style="color: #1a237e; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee;">Price Reasonability Analysis</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+
+                <div>
+                    <h3 style="color: #1a237e; margin-bottom: 12px; font-size: 17px;">What is Price Reasonability?</h3>
+                    <p style="color: #555; line-height: 1.8; font-size: 14px; margin-bottom: 15px;">
+                        Price reasonability is the process of verifying whether a quoted or proposed price for a government procurement
+                        item or service falls within an acceptable market range. Under the General Financial Rules (GFR) 2017,
+                        every procurement officer must satisfy themselves that the price being paid is fair and not excessive.
+                    </p>
+                    <p style="color: #555; line-height: 1.8; font-size: 14px; margin-bottom: 15px;">
+                        This system uses an AI model trained on <strong>5,000+ product records</strong> and <strong>2,000+ service records</strong>
+                        from real government procurement data to predict fair market prices and flag anomalies.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="color: #1a237e; margin-bottom: 12px; font-size: 17px;">How the AI Evaluates Prices</h3>
+                    <div style="color: #555; font-size: 14px; line-height: 2;">
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+                            <span style="color: #1a237e; margin-right: 10px; font-weight: bold;">01</span>
+                            <span><strong>Base Price Lookup</strong> — Fetches historical average for the same item from the dataset.</span>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+                            <span style="color: #1a237e; margin-right: 10px; font-weight: bold;">02</span>
+                            <span><strong>Feature Engineering</strong> — Accounts for vendor tier, location, source, quantity, delivery, and warranty.</span>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+                            <span style="color: #1a237e; margin-right: 10px; font-weight: bold;">03</span>
+                            <span><strong>ML Prediction</strong> — Random Forest model (R² ≈ 0.95) predicts the fair market price.</span>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+                            <span style="color: #1a237e; margin-right: 10px; font-weight: bold;">04</span>
+                            <span><strong>Recommendation</strong> — Price range, risk factors, and approval level as per GFR guidelines.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1a237e; margin-bottom: 15px; font-size: 17px;">Price Reasonability Assessment Criteria</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                        <h4 style="color: #2e7d32; margin-bottom: 8px;">Within Range</h4>
+                        <p style="color: #555; font-size: 13px; line-height: 1.6;">
+                            Predicted price falls within <strong>±15%</strong> of the AI-estimated fair price. The quoted amount
+                            is considered reasonable and can proceed for administrative approval without further scrutiny.
+                        </p>
+                    </div>
+
+                    <div style="background: #fff3e0; padding: 20px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #e65100; margin-bottom: 8px;">Slightly Above Range</h4>
+                        <p style="color: #555; font-size: 13px; line-height: 1.6;">
+                            Quoted price is <strong>15–30% above</strong> the AI prediction. The procurement officer should
+                            negotiate with the vendor or request additional quotations from competing suppliers before proceeding.
+                        </p>
+                    </div>
+
+                    <div style="background: #fce4ec; padding: 20px; border-radius: 8px; border-left: 4px solid #f44336;">
+                        <h4 style="color: #c62828; margin-bottom: 8px;">Significantly Above Range</h4>
+                        <p style="color: #555; font-size: 13px; line-height: 1.6;">
+                            Quoted price exceeds <strong>30% above</strong> the AI prediction. Flagged as potential price inflation.
+                            Requires mandatory comparison with GeM rates, L1 bids, and investigation before approval.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1a237e; margin-bottom: 15px; font-size: 17px;">Key Factors Considered</h3>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+
+                    <div style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                        <div style="font-size: 28px; margin-bottom: 8px;">🏷️</div>
+                        <h4 style="color: #333; margin-bottom: 5px; font-size: 14px;">Vendor Tier</h4>
+                        <p style="color: #888; font-size: 12px;">Tier 1 vendors add ~15% premium for quality. Tier 3 offer ~15% discount.</p>
+                    </div>
+
+                    <div style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                        <div style="font-size: 28px; margin-bottom: 8px;">📍</div>
+                        <h4 style="color: #333; margin-bottom: 5px; font-size: 14px;">Location</h4>
+                        <p style="color: #888; font-size: 12px;">Metro cities cost 2–8% more due to logistics, taxes, and demand.</p>
+                    </div>
+
+                    <div style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                        <div style="font-size: 28px; margin-bottom: 8px;">📦</div>
+                        <h4 style="color: #333; margin-bottom: 5px; font-size: 14px;">Quantity</h4>
+                        <p style="color: #888; font-size: 12px;">Bulk orders above 10 units qualify for 2–12% volume discount.</p>
+                    </div>
+
+                    <div style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                        <div style="font-size: 28px; margin-bottom: 8px;">📜</div>
+                        <h4 style="color: #333; margin-bottom: 5px; font-size: 14px;">Source Reliability</h4>
+                        <p style="color: #888; font-size: 12px;">GeM Portal rates (0.95) weighted higher than Vendor Quotation (0.88).</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1a237e; margin-bottom: 15px; font-size: 17px;">GFR 2017 Procurement Thresholds</h3>
+                <table class="history-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 12px; text-align: left; background: #f5f5f5; border-bottom: 2px solid #eee;">Value Bracket</th>
+                            <th style="padding: 12px; text-align: left; background: #f5f5f5; border-bottom: 2px solid #eee;">Minimum Comparisons</th>
+                            <th style="padding: 12px; text-align: left; background: #f5f5f5; border-bottom: 2px solid #eee;">Approval Authority</th>
+                            <th style="padding: 12px; text-align: left; background: #f5f5f5; border-bottom: 2px solid #eee;">Procedure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Up to ₹50,000</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Single source (if justified)</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Under Secretary</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Direct purchase with written justification</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">₹50,001 – ₹5,00,000</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">At least 2 quotations</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Deputy / Joint Secretary</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Limited tender with comparison statement</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">₹5,00,001 – ₹10,00,000</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">At least 3 quotations</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Joint Secretary / Secretary</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Rate Contract / GeM preferred; comparative statement mandatory</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">₹10,00,001 – ₹50,00,000</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Tender with ≥3 bids</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Secretary / ACC</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Formal tender process; e-tendering preferred</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Above ₹50,00,000</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">e-Procurement mandatory (≥3 bids)</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">ACC / CCEA</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">Full e-tendering via GeM / CPP Portal with technical & financial evaluation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/predict" style="display: inline-block; padding: 14px 40px; background: #1a237e; color: white; text-decoration: none; border-radius: 6px; font-size: 16px; transition: background 0.3s;">Start Price Prediction</a>
             </div>
         </div>
-    </div>
 </body>
 </html>

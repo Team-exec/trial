@@ -300,6 +300,98 @@
             <p>The predicted price may be higher than expected. Please review the procurement requirements and consider negotiating with vendors.</p>
         </div>
         {% endif %}
+
+        <div class="card">
+            <h2>Reasonability Analysis</h2>
+
+            <div class="result-grid">
+                <div class="result-section">
+                    <h3>Confidence Assessment</h3>
+                    <div class="result-item">
+                        <span class="label">Confidence Level</span>
+                        <span class="value">
+                            {% if result.recommendation.confidence_level == 'High' %}
+                                <span style="color: #2e7d32; font-weight: bold;">{{ result.recommendation.confidence_level }}</span>
+                            {% elif result.recommendation.confidence_level == 'Medium' %}
+                                <span style="color: #e65100; font-weight: bold;">{{ result.recommendation.confidence_level }}</span>
+                            {% else %}
+                                <span style="color: #c62828; font-weight: bold;">{{ result.recommendation.confidence_level }}</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Model Confidence</span>
+                        <span class="value">{{ result.prediction.confidence }}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Benchmark Comparison</span>
+                        <span class="value" style="font-size: 13px;">{{ result.recommendation.benchmark_comparison }}</span>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>Procurement Guidelines</h3>
+                    <div class="result-item">
+                        <span class="label">Approval Authority</span>
+                        <span class="value" style="font-size: 13px;">{{ result.recommendation.approval_level }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Negotiation Margin</span>
+                        <span class="value">₹{{ format_currency(result.recommendation.negotiation_margin) }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Fair Price Range</span>
+                        <span class="value">₹{{ format_currency(result.recommendation.price_range.minimum) }} – ₹{{ format_currency(result.recommendation.price_range.maximum) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if result.recommendation.risk_factors %}
+            <div style="margin-top: 20px;">
+                <h3 style="color: #c62828; margin-bottom: 10px; font-size: 16px;">Risk Factors</h3>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    {% for risk in result.recommendation.risk_factors %}
+                    <li style="color: #555;">{{ risk }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px;">
+                <h3 style="color: #1a237e; margin-bottom: 10px; font-size: 16px;">Quick Reference — GFR 2017</h3>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Value Bracket</th>
+                            <th>Minimum Comparisons Required</th>
+                            <th>Approval Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Up to ₹50,000</td>
+                            <td>Single source (if justified)</td>
+                            <td>Under Secretary</td>
+                        </tr>
+                        <tr>
+                            <td>₹50,001 – ₹5,00,000</td>
+                            <td>At least 2 quotations</td>
+                            <td>Deputy Secretary / Joint Secretary</td>
+                        </tr>
+                        <tr>
+                            <td>₹5,00,001 – ₹10,00,000</td>
+                            <td>At least 3 quotations (Rate Contract / GeM preferred)</td>
+                            <td>Joint Secretary / Secretary</td>
+                        </tr>
+                        <tr>
+                            <td>Above ₹10,00,000</td>
+                            <td>Tender / e-Procurement mandatory</td>
+                            <td>Secretary / ACC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         
         {% if result.historical_prices %}
         <div class="card">
