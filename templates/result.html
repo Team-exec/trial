@@ -1,234 +1,730 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Benchmarking System - Prediction Result</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="/static/js/charts.js"></script>
-    <style>
-        .confidence-circle {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 15px;
-        }
-        .confidence-circle svg {
-            width: 100px;
-            height: 100px;
-            transform: rotate(-90deg);
-        }
-        .confidence-circle .bg {
-            fill: none;
-            stroke: rgba(255,255,255,0.2);
-            stroke-width: 6;
-        }
-        .confidence-circle .fill {
-            fill: none;
-            stroke: white;
-            stroke-width: 6;
-            stroke-linecap: round;
-            stroke-dasharray: 251;
-            stroke-dashoffset: 251;
-            animation: gaugeFill 1.5s ease forwards;
-        }
-        .confidence-circle .text {
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            margin-top: -65px;
-            position: relative;
-        }
-        .confidence-circle .subtext {
-            font-size: 11px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 5px;
-        }
-        .chart-section { margin-top: 20px; }
-        .result-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Benchmarking System - Prediction Result</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/static/js/charts.js"></script>
+<style>
+:root{
+    --navy:#1a3c78;
+    --navy-deep:#12294f;
+    --steel:#2C4A6E;
+    --paper:#F6F3EC;
+    --paper-dark:#EFEADD;
+    --ink:#201E1A;
+    --ink-soft:#5C574C;
+    --marigold:#B8730E;
+    --marigold-light:#E4A339;
+    --line:#DAD3C1;
+    --success:#2E6B3E;
+    --danger:#a8402f;
+    --white:#FFFFFF;
+    --font-display:'Source Serif 4', Georgia, serif;
+    --font-body:'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+    font-family:var(--font-body);
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+}
+@media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+}
+
+/* ===== MASTHEAD ===== */
+.gazette-masthead{
+    background:var(--navy);
+    border-bottom:3px solid var(--marigold);
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+.masthead-strip{
+    background:var(--navy-deep);
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(246,243,236,0.6);
+    padding:6px 30px;
+    display:flex;
+    justify-content:space-between;
+}
+.masthead-main{
+    max-width:1240px;
+    margin:0 auto;
+    padding:16px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+}
+.masthead-title{ display:flex; align-items:center; gap:14px; }
+.seal-mark{
+    width:38px; height:38px;
+    border-radius:50%;
+    border:1.5px solid var(--marigold-light);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--marigold-light);
+    flex-shrink:0;
+    position:relative;
+}
+.seal-mark::before{
+    content:''; position:absolute; inset:4px;
+    border:1px dashed rgba(228,163,57,0.5);
+    border-radius:50%;
+}
+.masthead-title h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:19px;
+    color:var(--paper);
+    letter-spacing:-0.01em;
+}
+.masthead-nav{ display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
+.masthead-nav a{
+    color:rgba(246,243,236,0.78);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    padding:9px 16px;
+    border-radius:3px;
+    transition:background 0.2s, color 0.2s;
+}
+.masthead-nav a:hover{ background:rgba(246,243,236,0.08); color:var(--paper); }
+.masthead-nav a.logout-link{ color:rgba(246,243,236,0.5); }
+
+/* ===== LAYOUT ===== */
+.container{
+    max-width:1240px;
+    margin:0 auto;
+    padding:36px 30px 60px;
+}
+
+/* ===== RESULT HEADER / CERTIFICATE BLOCK ===== */
+.result-header{
+    background:var(--navy);
+    border-radius:4px;
+    padding:36px 40px;
+    margin-bottom:28px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border-bottom:3px solid var(--marigold);
+}
+.result-header::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.04) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(255,255,255,0.03) 0%, transparent 40%);
+    pointer-events:none;
+}
+.result-header > *{ position:relative; z-index:1; }
+.result-header .kicker{
+    font-family:var(--font-mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--marigold-light);
+    display:block;
+    margin-bottom:10px;
+}
+.result-header h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:22px;
+    color:var(--paper);
+    margin-bottom:18px;
+}
+.price-display{
+    font-family:var(--font-mono);
+    font-size:42px;
+    font-weight:600;
+    color:var(--white);
+    margin-bottom:6px;
+}
+.confidence-circle {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 18px;
+}
+.confidence-circle svg {
+    width: 100px;
+    height: 100px;
+    transform: rotate(-90deg);
+}
+.confidence-circle .bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.18);
+    stroke-width: 6;
+}
+.confidence-circle .fill {
+    fill: none;
+    stroke: var(--marigold-light);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 251;
+    stroke-dashoffset: 251;
+    animation: gaugeFill 1.5s ease forwards;
+}
+@keyframes gaugeFill{
+    to{ stroke-dashoffset: var(--offset, 0); }
+}
+.confidence-circle .text {
+    font-family:var(--font-mono);
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--white);
+    margin-top: -63px;
+    position: relative;
+}
+.confidence-circle .subtext {
+    font-family:var(--font-mono);
+    font-size: 10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color: rgba(255,255,255,0.65);
+    margin-top: 8px;
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-label{
+    font-family:var(--font-display);
+    font-weight:600;
+    color:var(--navy);
+    font-size:16px;
+    margin-bottom:18px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+/* ===== CARDS ===== */
+.card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:26px 28px;
+    margin-bottom:24px;
+}
+.card > h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:17px;
+    color:var(--navy);
+    margin-bottom:20px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+/* ===== RESULT GRID ===== */
+.result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-bottom:24px;
+}
+.result-section{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:22px 24px;
+}
+.result-section h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:15px;
+    color:var(--navy);
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:1px dashed var(--line);
+}
+.result-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+    gap:12px;
+    flex-wrap:wrap;
+}
+.result-item:last-child{ border-bottom:none; }
+.result-item .label{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--ink-soft);
+}
+.result-item .value{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+    text-align:right;
+}
+
+/* ===== PRICE BAR ===== */
+.price-bar-container{ margin-top:16px; }
+.price-bar-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+}
+.price-bar{
+    height:8px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+}
+.price-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--navy), var(--marigold));
+    border-radius:4px;
+}
+
+/* ===== ALERT BLOCKS ===== */
+.warning, .recommendation{
+    border-radius:4px;
+    padding:18px 22px;
+    margin-bottom:24px;
+    border:1px solid var(--line);
+    border-left:3px solid var(--marigold);
+    background:var(--white);
+}
+.warning h4, .recommendation h4{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:14.5px;
+    margin-bottom:8px;
+    color:var(--marigold);
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.warning p, .recommendation p{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin:4px 0;
+}
+.recommendation{ border-left-color:var(--success); }
+.recommendation h4{ color:var(--success); }
+
+/* ===== TABLES ===== */
+.history-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+.history-table thead th{
+    text-align:left;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+    padding:10px 12px;
+    border-bottom:2px solid var(--line);
+    background:var(--paper-dark);
+}
+.history-table tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+}
+.history-table tbody tr:hover{ background:var(--paper); }
+.sort-icon{ color:var(--marigold); font-size:10px; margin-left:4px; }
+
+/* ===== GFR reference box ===== */
+.gfr-box{
+    margin-top:24px;
+    padding:20px 22px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+}
+.gfr-box h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:14px;
+    font-size:15px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+}
+
+/* ===== RISK FACTORS ===== */
+.risk-block{ margin-top:20px; }
+.risk-block h3{
+    color:var(--danger);
+    margin-bottom:10px;
+    font-size:14.5px;
+    font-family:var(--font-display);
+    font-weight:600;
+}
+.risk-block ul{ margin-left:20px; line-height:1.8; }
+.risk-block li{ color:var(--ink-soft); font-size:13px; }
+
+/* ===== CHART ===== */
+.chart-section{ margin-top:20px; }
+
+/* ===== ACTIONS ===== */
+.result-actions{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    margin-top:30px;
+    flex-wrap:wrap;
+}
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 24px;
+    background:var(--navy);
+    color:var(--paper);
+    border:1px solid var(--navy);
+    border-radius:3px;
+    font-size:13.5px;
+    font-weight:600;
+    font-family:var(--font-body);
+    text-decoration:none;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.15s;
+}
+.btn:hover{ background:var(--navy-deep); }
+.btn:active{ transform:scale(0.98); }
+.btn-secondary{
+    background:transparent;
+    color:var(--navy);
+    border:1.5px solid var(--line);
+}
+.btn-secondary:hover{ background:var(--paper-dark); border-color:var(--navy); }
+
+footer.gazette-footer{
+    text-align:center;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-soft);
+    padding:24px 20px 40px;
+    letter-spacing:0.03em;
+}
+
+@media (max-width: 900px){
+    .result-grid{ grid-template-columns:1fr; }
+    .container{ padding:24px 18px 48px; }
+    .price-display{ font-size:32px; }
+}
+</style>
 </head>
 <body class="page-animate">
-    <nav class="navbar">
-        <h1>Price Benchmarking System</h1>
-        <div class="user-info">
+
+<div class="gazette-masthead">
+    <div class="masthead-strip">
+        <span>Government Procurement &middot; Price Intelligence Unit</span>
+        <span>Session Active</span>
+    </div>
+    <div class="masthead-main">
+        <div class="masthead-title">
+            <div class="seal-mark">PBS</div>
+            <h1>Price Benchmarking System</h1>
+        </div>
+        <nav class="masthead-nav">
             <a href="/dashboard">Dashboard</a>
             <a href="/predict">New Prediction</a>
-            <a href="/logout">Logout</a>
-        </div>
-    </nav>
+            <a href="/logout" class="logout-link">Logout</a>
+        </nav>
+    </div>
+</div>
 
-    <div class="container">
-        <div class="result-header">
-            <h2>Price Prediction Result</h2>
-            <div class="price-display">
-                {% if result.type == 'product' %}
-                    &#8377;<span id="animated-price">{{ "%.2f"|format(result.prediction.predicted_price) }}</span>
-                {% else %}
-                    &#8377;<span id="animated-price">{{ "%.2f"|format(result.prediction.predicted_monthly_price) }}</span>/month
-                {% endif %}
-            </div>
-            <div class="confidence-circle">
-                <svg viewBox="0 0 100 100">
-                    <circle class="bg" cx="50" cy="50" r="40"></circle>
-                    <circle class="fill" cx="50" cy="50" r="40"
-                        style="stroke-dashoffset: {{ 251 - (251 * result.prediction.confidence) }}"></circle>
-                </svg>
-                <div class="text">{{ "%.1f"|format(result.prediction.confidence * 100) }}%</div>
-                <div class="subtext">Confidence Score</div>
-            </div>
-        </div>
+<div class="container">
+<div class="result-header">
+    <span class="kicker">Prediction Certificate</span>
+    <h2>Price Prediction Result</h2>
+    <div class="price-display">
+    {% if result.type == 'product' %}
+    &#8377;<span id="animated-price">{{ "%.2f"|format(result.prediction.predicted_price) }}</span>
+    {% else %}
+    &#8377;<span id="animated-price">{{ "%.2f"|format(result.prediction.predicted_monthly_price) }}</span>/month
+    {% endif %}
+    </div>
+    <div class="confidence-circle">
+    <svg viewBox="0 0 100 100">
+        <circle class="bg" cx="50" cy="50" r="40"></circle>
+        <circle class="fill" cx="50" cy="50" r="40"
+        style="--offset: {{ 251 - (251 * result.prediction.confidence) }}; stroke-dashoffset: 251;"></circle>
+    </svg>
+    <div class="text">{{ "%.1f"|format(result.prediction.confidence * 100) }}%</div>
+    <div class="subtext">Confidence Score</div>
+    </div>
+</div>
 
-        <div class="result-grid">
-            <div class="result-section">
-                <h3>&#128196; Input Details</h3>
-                {% for key, value in result.input.items() %}
-                <div class="result-item" data-tooltip="{{ key|replace('_', ' ')|title }}: {{ value }}">
-                    <span class="label">{{ key|replace('_', ' ')|title }}</span>
-                    <span class="value">{{ value }}</span>
-                </div>
-                {% endfor %}
-            </div>
+<div class="result-grid">
+    <div class="result-section">
+    <h3>Input Details</h3>
+    {% for key, value in result.input.items() %}
+    <div class="result-item" data-tooltip="{{ key|replace('_', ' ')|title }}: {{ value }}">
+        <span class="label">{{ key|replace('_', ' ')|title }}</span>
+        <span class="value">{{ value }}</span>
+    </div>
+    {% endfor %}
+    </div>
 
-            <div class="result-section">
-                <h3>&#128176; Price Analysis</h3>
-                <div class="result-item">
-                    <span class="label">Predicted Price</span>
-                    <span class="value" style="color: #1a237e; font-size: 16px;">
-                        {% if result.type == 'product' %}
-                            &#8377;{{ format_currency(result.prediction.predicted_price) }}
-                        {% else %}
-                            &#8377;{{ format_currency(result.prediction.predicted_monthly_price) }}/month
-                        {% endif %}
-                    </span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Total Price</span>
-                    <span class="value">&#8377;{{ format_currency(result.prediction.total_price) }}</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Recommended Price</span>
-                    <span class="value" style="color: #2e7d32;">&#8377;{{ format_currency(result.recommendation.recommended_price) }}</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Price Range</span>
-                    <span class="value" data-tooltip="Minimum to Maximum expected price range">
-                        &#8377;{{ format_currency(result.recommendation.price_range.minimum) }} -
-                        &#8377;{{ format_currency(result.recommendation.price_range.maximum) }}
-                    </span>
-                </div>
-
-                <div class="price-bar-container" style="margin-top: 15px;">
-                    <div class="price-bar-label">
-                        <span>Min: &#8377;{{ format_currency(result.recommendation.price_range.minimum) }}</span>
-                        <span>Max: &#8377;{{ format_currency(result.recommendation.price_range.maximum) }}</span>
-                    </div>
-                    <div class="price-bar">
-                        {% set range_total = result.recommendation.price_range.maximum - result.recommendation.price_range.minimum %}
-                        {% if range_total > 0 %}
-                            {% if result.type == 'product' %}
-                                {% set predicted_pct = ((result.prediction.predicted_price) - result.recommendation.price_range.minimum) / range_total * 100 %}
-                            {% else %}
-                                {% set predicted_pct = ((result.prediction.predicted_monthly_price) - result.recommendation.price_range.minimum) / range_total * 100 %}
-                            {% endif %}
-                        {% else %}
-                            {% set predicted_pct = 50 %}
-                        {% endif %}
-                        <div class="price-bar-fill" style="width: {{ [predicted_pct, 100]|min }}%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if result.recommendation.suggestions %}
-        <div class="warning" style="opacity: 0; animation: fadeInLeft 0.5s ease 0.3s forwards;">
-            <h4>&#9888; Suggestions</h4>
-            {% for suggestion in result.recommendation.suggestions %}
-            <p>&bull; {{ suggestion }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if result.recommendation.price_reasonable %}
-        <div class="recommendation">
-            <h4>&#10003; Price Reasonability Assessment</h4>
-            <p>The predicted price appears to be reasonable based on market data and historical trends. This price can be considered for administrative approval.</p>
-        </div>
+    <div class="result-section">
+    <h3>Price Analysis</h3>
+    <div class="result-item">
+        <span class="label">Predicted Price</span>
+        <span class="value" style="color: var(--navy); font-size: 15px;">
+        {% if result.type == 'product' %}
+        &#8377;{{ format_currency(result.prediction.predicted_price) }}
         {% else %}
-        <div class="warning">
-            <h4>&#9888; Price Reasonability Alert</h4>
-            <p>The predicted price may be higher than expected. Please review the procurement requirements and consider negotiating with vendors.</p>
-        </div>
+        &#8377;{{ format_currency(result.prediction.predicted_monthly_price) }}/month
         {% endif %}
+        </span>
+    </div>
+    <div class="result-item">
+        <span class="label">Total Price</span>
+        <span class="value">&#8377;{{ format_currency(result.prediction.total_price) }}</span>
+    </div>
+    <div class="result-item">
+        <span class="label">Recommended Price</span>
+        <span class="value" style="color: var(--success);">&#8377;{{ format_currency(result.recommendation.recommended_price) }}</span>
+    </div>
+    <div class="result-item">
+        <span class="label">Price Range</span>
+        <span class="value" data-tooltip="Minimum to Maximum expected price range">
+        &#8377;{{ format_currency(result.recommendation.price_range.minimum) }} -
+        &#8377;{{ format_currency(result.recommendation.price_range.maximum) }}
+        </span>
+    </div>
 
-        {% if result.historical_prices %}
-        <div class="card">
-            <h2>&#128200; Recent Market Prices</h2>
-            <div class="chart-section">
-                <div style="height: 300px;">
-                    <canvas id="priceComparisonChart"></canvas>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Index <span class="sort-icon">&#8597;</span></th>
-                            <th>Historical Price <span class="sort-icon">&#8597;</span></th>
-                            <th>Difference <span class="sort-icon">&#8597;</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for price in result.historical_prices %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>&#8377;{{ format_currency(price) }}</td>
-                            <td>
-                                {% set diff = ((result.prediction.predicted_price - price) / price * 100)|round(1) %}
-                                {% if diff > 0 %}
-                                    <span style="color: #e65100; font-weight: 500;">+{{ diff }}%</span>
-                                {% else %}
-                                    <span style="color: #2e7d32; font-weight: 500;">{{ diff }}%</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="price-bar-container">
+        <div class="price-bar-label">
+        <span>Min: &#8377;{{ format_currency(result.recommendation.price_range.minimum) }}</span>
+        <span>Max: &#8377;{{ format_currency(result.recommendation.price_range.maximum) }}</span>
         </div>
+        <div class="price-bar">
+        {% set range_total = result.recommendation.price_range.maximum - result.recommendation.price_range.minimum %}
+        {% if range_total > 0 %}
+            {% if result.type == 'product' %}
+            {% set predicted_pct = ((result.prediction.predicted_price) - result.recommendation.price_range.minimum) / range_total * 100 %}
+            {% else %}
+            {% set predicted_pct = ((result.prediction.predicted_monthly_price) - result.recommendation.price_range.minimum) / range_total * 100 %}
+            {% endif %}
+        {% else %}
+            {% set predicted_pct = 50 %}
         {% endif %}
+        <div class="price-bar-fill" style="width: {{ [predicted_pct, 100]|min }}%;"></div>
+        </div>
+    </div>
+    </div>
+</div>
 
-        <div class="result-actions">
-            <a href="/predict" class="btn">New Prediction</a>
-            <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
-            <button class="btn btn-secondary" onclick="window.print()">Print Result</button>
+{% if result.recommendation.suggestions %}
+<div class="warning">
+    <h4>&#9888; Suggestions</h4>
+    {% for suggestion in result.recommendation.suggestions %}
+    <p>&bull; {{ suggestion }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if result.recommendation.price_reasonable %}
+<div class="recommendation">
+    <h4>&#10003; Price Reasonability Assessment</h4>
+    <p>The predicted price appears to be reasonable based on market data and historical trends. This price can be considered for administrative approval.</p>
+</div>
+{% else %}
+<div class="warning">
+    <h4>&#9888; Price Reasonability Alert</h4>
+    <p>The predicted price may be higher than expected. Please review the procurement requirements and consider negotiating with vendors.</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Reasonability Analysis</h2>
+
+    <div class="result-grid" style="margin-bottom:0;">
+    <div class="result-section">
+        <h3>Confidence Assessment</h3>
+        <div class="result-item">
+        <span class="label">Confidence Level</span>
+        <span class="value">
+            {% if result.recommendation.confidence_level == 'High' %}
+            <span style="color: var(--success); font-weight: 700;">&#9679; {{ result.recommendation.confidence_level }}</span>
+            {% elif result.recommendation.confidence_level == 'Medium' %}
+            <span style="color: var(--marigold); font-weight: 700;">&#9679; {{ result.recommendation.confidence_level }}</span>
+            {% else %}
+            <span style="color: var(--danger); font-weight: 700;">&#9679; {{ result.recommendation.confidence_level }}</span>
+            {% endif %}
+        </span>
+        </div>
+        <div class="result-item">
+        <span class="label">Model Confidence</span>
+        <span class="value">{{ "%.1f"|format(result.prediction.confidence * 100) }}%</span>
+        </div>
+        <div class="result-item">
+        <span class="label">Benchmark Comparison</span>
+        <span class="value" style="font-size: 12.5px;">{{ result.recommendation.benchmark_comparison }}</span>
         </div>
     </div>
 
-    <script src="/static/js/app.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            {% if result.historical_prices %}
-            var historical = [{% for price in result.historical_prices %}{{ price }}{% if not loop.last %},{% endif %}{% endfor %}];
-            {% if result.type == 'product' %}
-            var predicted = {{ result.prediction.predicted_price }};
-            {% else %}
-            var predicted = {{ result.prediction.predicted_monthly_price }};
-            {% endif %}
-            PBCharts.renderPriceComparisonChart('priceComparisonChart', predicted, historical);
-            {% endif %}
+    <div class="result-section">
+        <h3>Procurement Guidelines</h3>
+        <div class="result-item">
+        <span class="label">Approval Authority</span>
+        <span class="value" style="font-size: 12.5px;">{{ result.recommendation.approval_level }}</span>
+        </div>
+        <div class="result-item">
+        <span class="label">Negotiation Margin</span>
+        <span class="value">&#8377;{{ format_currency(result.recommendation.negotiation_margin) }}</span>
+        </div>
+        <div class="result-item">
+        <span class="label">Fair Price Range</span>
+        <span class="value">&#8377;{{ format_currency(result.recommendation.price_range.minimum) }} &#8211; &#8377;{{ format_currency(result.recommendation.price_range.maximum) }}</span>
+        </div>
+    </div>
+    </div>
 
-            PBApp.Toast.success('Price prediction completed!');
-        });
-    </script>
+    {% if result.recommendation.risk_factors %}
+    <div class="risk-block">
+    <h3>&#9888; Risk Factors</h3>
+    <ul>
+        {% for risk in result.recommendation.risk_factors %}
+        <li>{{ risk }}</li>
+        {% endfor %}
+    </ul>
+    </div>
+    {% endif %}
+
+    <div class="gfr-box">
+    <h3>GFR 2017 Quick Reference</h3>
+    <table class="history-table">
+        <thead>
+        <tr>
+            <th>Value Bracket</th>
+            <th>Minimum Comparisons</th>
+            <th>Approval Level</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Up to &#8377;50,000</td>
+            <td>Single source (if justified)</td>
+            <td>Under Secretary</td>
+        </tr>
+        <tr>
+            <td>&#8377;50,001 &#8211; &#8377;5,00,000</td>
+            <td>At least 2 quotations</td>
+            <td>Deputy / Joint Secretary</td>
+        </tr>
+        <tr>
+            <td>&#8377;5,00,001 &#8211; &#8377;10,00,000</td>
+            <td>At least 3 quotations (GeM preferred)</td>
+            <td>Joint Secretary / Secretary</td>
+        </tr>
+        <tr>
+            <td>Above &#8377;10,00,000</td>
+            <td>Tender / e-Procurement mandatory</td>
+            <td>Secretary / ACC</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+{% if result.historical_prices %}
+<div class="card">
+    <h2>Recent Market Prices</h2>
+    <div class="chart-section">
+    <div style="height: 300px;">
+        <canvas id="priceComparisonChart"></canvas>
+    </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+    <table class="history-table">
+        <thead>
+        <tr>
+            <th>Index <span class="sort-icon">&#8597;</span></th>
+            <th>Historical Price <span class="sort-icon">&#8597;</span></th>
+            <th>Difference <span class="sort-icon">&#8597;</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for price in result.historical_prices %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>&#8377;{{ format_currency(price) }}</td>
+            <td>
+            {% if result.type == 'product' %}
+            {% set diff = ((result.prediction.predicted_price - price) / price * 100)|round(1) %}
+            {% else %}
+            {% set diff = ((result.prediction.predicted_monthly_price - price) / price * 100)|round(1) %}
+            {% endif %}
+            {% if diff > 0 %}
+            <span style="color: var(--marigold); font-weight: 600;">+{{ diff }}%</span>
+            {% else %}
+            <span style="color: var(--success); font-weight: 600;">{{ diff }}%</span>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endif %}
+
+<div class="result-actions">
+    <a href="/predict" class="btn">New Prediction</a>
+    <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
+    <button class="btn btn-secondary" onclick="window.print()">Print Result</button>
+</div>
+</div>
+
+<footer class="gazette-footer">
+    Price Benchmarking System &middot; Government Procurement Price Intelligence Unit
+</footer>
+
+<script src="/static/js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+{% if result.historical_prices %}
+var historical = [{% for price in result.historical_prices %}{{ price }}{% if not loop.last %},{% endif %}{% endfor %}];
+{% if result.type == 'product' %}
+var predicted = {{ result.prediction.predicted_price }};
+{% else %}
+var predicted = {{ result.prediction.predicted_monthly_price }};
+{% endif %}
+PBCharts.renderPriceComparisonChart('priceComparisonChart', predicted, historical);
+{% endif %}
+
+PBApp.Toast.success('Price prediction completed!');
+}); 
+</script>
 </body>
 </html>

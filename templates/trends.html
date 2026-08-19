@@ -6,25 +6,31 @@
     <title>Price Benchmarking System - Market Trends</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="/static/js/charts.js"></script>
     <style>
     :root{
-        --ink:#0f1b3c;
-        --slate:#1e3a5f;
-        --paper:#f7f5f0;
-        --paper-dim:#eceadf;
-        --brass:#b08d57;
-        --brass-light:#d8bd8a;
-        --good:#2f6e4f;
-        --bad:#a8402f;
-        --line:#d9d4c6;
-        --ink-soft:rgba(15,27,60,0.62);
+        --navy:#1a3c78;
+        --navy-deep:#12294f;
+        --steel:#2C4A6E;
+        --paper:#F6F3EC;
+        --paper-dark:#EFEADD;
+        --ink:#201E1A;
+        --ink-soft:#5C574C;
+        --marigold:#B8730E;
+        --marigold-light:#E4A339;
+        --line:#DAD3C1;
+        --success:#2E6B3E;
+        --danger:#a8402f;
+        --white:#FFFFFF;
+        --font-display:'Source Serif 4', Georgia, serif;
+        --font-body:'IBM Plex Sans', system-ui, sans-serif;
+        --font-mono:'IBM Plex Mono', monospace;
     }
     *{ margin:0; padding:0; box-sizing:border-box; }
     body{
-        font-family:'IBM Plex Sans',sans-serif;
+        font-family:var(--font-body);
         background:var(--paper);
         color:var(--ink);
         min-height:100vh;
@@ -33,134 +39,211 @@
         *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
     }
 
-    /* ---------- NAV ---------- */
-    .navbar{
+    /* ---------- MASTHEAD ---------- */
+    .gazette-masthead{
+        background:var(--navy);
+        border-bottom:3px solid var(--marigold);
         position:sticky;
         top:0;
         z-index:20;
+    }
+    .masthead-strip{
+        background:var(--navy-deep);
+        font-family:var(--font-mono);
+        font-size:11px;
+        letter-spacing:0.08em;
+        text-transform:uppercase;
+        color:rgba(246,243,236,0.6);
+        padding:6px 30px;
+        display:flex;
+        justify-content:space-between;
+    }
+    .masthead-main{
+        max-width:1240px;
+        margin:0 auto;
+        padding:16px 30px;
         display:flex;
         align-items:center;
         justify-content:space-between;
-        background:#1a237e;
-        padding:16px 40px;
-        box-shadow:0 2px 14px rgba(15,27,60,0.18);
+        flex-wrap:wrap;
+        gap:16px;
     }
-    .navbar h1{
-        font-family:'Source Serif 4',serif;
-        font-weight:600;
-        font-size:19px;
-        color:var(--paper);
+    .masthead-title{
         display:flex;
         align-items:center;
-        gap:12px;
+        gap:14px;
     }
-    .navbar h1::before{
-        content:'PB';
+    .seal-mark{
+        width:38px;
+        height:38px;
+        border-radius:50%;
+        border:1.5px solid var(--marigold-light);
         display:flex;
         align-items:center;
         justify-content:center;
-        width:30px;
-        height:30px;
-        border:1.5px solid var(--brass-light);
-        border-radius:50%;
-        font-family:'Source Serif 4',serif;
-        font-size:12.5px;
-        color:var(--brass-light);
+        font-family:var(--font-mono);
+        font-size:10px;
+        color:var(--marigold-light);
         flex-shrink:0;
-    }
-    .user-info{ display:flex; gap:28px; align-items:center; }
-    .user-info a{
         position:relative;
-        color:rgba(247,245,240,0.78);
-        text-decoration:none;
-        font-size:13.5px;
-        font-weight:500;
-        padding:4px 0;
-        transition:color 0.2s;
     }
-    .user-info a::after{
+    .seal-mark::before{
         content:'';
         position:absolute;
-        left:0; bottom:-2px;
-        width:0; height:2px;
-        background:var(--brass-light);
-        transition:width 0.25s ease;
+        inset:4px;
+        border:1px dashed rgba(228,163,57,0.5);
+        border-radius:50%;
     }
-    .user-info a:hover{ color:var(--paper); }
-    .user-info a:hover::after{ width:100%; }
-    .user-info a[href="/logout"]{ color:rgba(247,245,240,0.5); }
+    .masthead-title h1{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:19px;
+        color:var(--paper);
+        letter-spacing:-0.01em;
+    }
+    .masthead-nav{
+        display:flex;
+        align-items:center;
+        gap:2px;
+        flex-wrap:wrap;
+    }
+    .masthead-nav a{
+        color:rgba(246,243,236,0.78);
+        text-decoration:none;
+        font-size:13px;
+        font-weight:500;
+        padding:9px 16px;
+        border-radius:3px;
+        transition:background 0.2s, color 0.2s;
+    }
+    .masthead-nav a:hover{
+        background:rgba(246,243,236,0.08);
+        color:var(--paper);
+    }
+    .masthead-nav a.active{
+        color:var(--marigold-light);
+    }
 
     /* ---------- LAYOUT ---------- */
     .container{
         max-width:1240px;
         margin:0 auto;
-        padding:36px 40px 60px;
+        padding:36px 30px 60px;
     }
-    .card{
-        background:#fff;
-        border:1px solid var(--line);
-        border-radius:10px;
-        padding:26px 28px;
-        margin-bottom:24px;
-        box-shadow:0 1px 3px rgba(15,27,60,0.05);
-        opacity:0;
-        animation:fadeUp 0.5s ease forwards;
+    .page-kicker{
+        font-family:var(--font-mono);
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:0.1em;
+        color:var(--marigold);
+        display:block;
+        margin-bottom:8px;
     }
-    .card:nth-of-type(1){ animation-delay:0.02s; }
-    .card:nth-of-type(2){ animation-delay:0.08s; }
-    .card:nth-of-type(3){ animation-delay:0.14s; }
-    .card:nth-of-type(4){ animation-delay:0.2s; }
-    @keyframes fadeUp{
-        from{ opacity:0; transform:translateY(10px); }
-        to{ opacity:1; transform:translateY(0); }
-    }
-    .card h2{
-        font-family:'Source Serif 4',serif;
+    .page-heading{
+        font-family:var(--font-display);
         font-weight:600;
-        font-size:19px;
-        margin-bottom:20px;
-        display:flex;
-        align-items:center;
-        gap:9px;
+        font-size:27px;
+        color:var(--navy);
+        margin-bottom:30px;
     }
 
-    /* ---------- STAT ROW ---------- */
+    .section-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:baseline;
+        margin:0 0 18px;
+        padding-bottom:10px;
+        border-bottom:1px solid var(--line);
+    }
+    .section-header h2{
+        font-family:var(--font-display);
+        font-weight:600;
+        color:var(--navy);
+        font-size:16px;
+        display:flex;
+        align-items:baseline;
+        gap:10px;
+    }
+    .section-header h2 .sec-no{
+        font-family:var(--font-mono);
+        font-size:12px;
+        color:var(--marigold);
+        font-weight:600;
+    }
+
+    .card{
+        background:var(--white);
+        border:1px solid var(--line);
+        border-radius:4px;
+        padding:26px 28px;
+        margin-bottom:24px;
+        opacity:0;
+        animation:fadeUp 0.45s ease forwards;
+    }
+    .card:nth-of-type(1){ animation-delay:0.02s; }
+    .card:nth-of-type(2){ animation-delay:0.07s; }
+    .card:nth-of-type(3){ animation-delay:0.12s; }
+    .card:nth-of-type(4){ animation-delay:0.17s; }
+    @keyframes fadeUp{
+        from{ opacity:0; transform:translateY(8px); }
+        to{ opacity:1; transform:translateY(0); }
+    }
+
+    /* ---------- STAT PLATES ---------- */
     .stats-row{
         display:grid;
         grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-        gap:18px;
+        gap:1px;
+        background:var(--line);
+        border:1px solid var(--line);
     }
     .stat-box{
         position:relative;
-        background:var(--paper-dim);
-        border:1px solid var(--line);
-        border-radius:8px;
-        padding:18px 20px;
+        background:var(--white);
+        padding:20px 20px 18px;
         cursor:default;
+        overflow:hidden;
+        border-top:3px solid var(--navy);
     }
+    .stat-box:nth-child(2){ border-top-color:var(--marigold); }
+    .stat-box:nth-child(3){ border-top-color:var(--success); }
+    .stat-box .watermark{
+        position:absolute;
+        right:6px;
+        top:-8px;
+        font-family:var(--font-display);
+        font-size:56px;
+        font-weight:600;
+        color:var(--paper-dark);
+        z-index:0;
+        line-height:1;
+        user-select:none;
+    }
+    .stat-box > *:not(.watermark){ position:relative; z-index:1; }
     .stat-box .label{
-        font-size:12px;
-        font-weight:500;
+        font-family:var(--font-mono);
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:0.06em;
         color:var(--ink-soft);
-        letter-spacing:0.01em;
         margin-bottom:8px;
     }
     .stat-box .value{
-        font-family:'IBM Plex Mono',monospace;
+        font-family:var(--font-display);
         font-size:30px;
-        font-weight:500;
-        color:var(--ink);
+        font-weight:600;
+        color:var(--navy);
     }
     .stat-box::after{
         content:attr(data-tooltip);
         position:absolute;
         bottom:calc(100% + 8px);
-        left:0;
+        left:20px;
         background:var(--ink);
         color:var(--paper);
         font-size:11.5px;
         padding:7px 10px;
-        border-radius:5px;
+        border-radius:4px;
         white-space:nowrap;
         opacity:0;
         transform:translateY(4px);
@@ -170,24 +253,46 @@
     }
     .stat-box:hover::after{ opacity:1; transform:translateY(0); }
 
+    /* ---------- CHART CARD ---------- */
+    .card h2{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:16.5px;
+        color:var(--navy);
+        margin-bottom:20px;
+        display:flex;
+        align-items:center;
+        gap:9px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--line);
+    }
+
     /* ---------- GRID ---------- */
     .trends-grid{
         display:grid;
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:1fr;
         gap:24px;
     }
+    .trends-row{
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:24px;
+    }
+    @media (max-width: 1100px){
+        .trends-row{ grid-template-columns:1fr 1fr; }
+    }
     @media (max-width: 960px){
-        .trends-grid{ grid-template-columns:1fr; }
-        .navbar{ flex-direction:column; gap:14px; padding:16px 20px; }
+        .trends-row{ grid-template-columns:1fr; }
+        .masthead-main{ padding:14px 18px; }
         .container{ padding:24px 18px 48px; }
     }
 
     /* ---------- ACCORDION TREND CARDS ---------- */
     .trend-card{
         border:1px solid var(--line);
-        border-left:3px solid var(--brass);
-        border-radius:7px;
-        margin-bottom:12px;
+        border-left:3px solid var(--marigold);
+        border-radius:3px;
+        margin-bottom:10px;
         overflow:hidden;
         background:var(--paper);
     }
@@ -195,16 +300,17 @@
         display:flex;
         align-items:center;
         justify-content:space-between;
-        padding:13px 16px;
-        font-family:'IBM Plex Sans',sans-serif;
-        font-size:14.5px;
+        padding:12px 15px;
+        font-family:var(--font-body);
+        font-size:14px;
         font-weight:600;
+        color:var(--navy);
         cursor:pointer;
         user-select:none;
     }
     .toggle-icon{
         display:inline-block;
-        font-size:11px;
+        font-size:10px;
         color:var(--ink-soft);
         transition:transform 0.25s ease;
     }
@@ -213,61 +319,60 @@
         max-height:0;
         overflow:hidden;
         transition:max-height 0.3s ease, padding 0.3s ease;
-        padding:0 16px;
+        padding:0 15px;
+        background:var(--white);
     }
     .trend-card.open .trend-content{
         max-height:400px;
-        padding:0 16px 16px;
+        padding:0 15px 15px;
     }
     .trend-item{
         padding:9px 0;
-        border-top:1px solid var(--line);
+        border-top:1px dashed var(--line);
     }
     .trend-item:first-child{ border-top:none; }
     .trend-item .title{
-        font-size:11.5px;
+        font-family:var(--font-mono);
+        font-size:10.5px;
         color:var(--ink-soft);
         margin-bottom:4px;
         text-transform:uppercase;
-        letter-spacing:0.04em;
+        letter-spacing:0.05em;
     }
     .trend-item .details{
         display:flex;
         justify-content:space-between;
         align-items:center;
-        font-size:13.5px;
+        font-size:13px;
+        color:var(--ink-soft);
         gap:12px;
         flex-wrap:wrap;
     }
     .price{
-        font-family:'IBM Plex Mono',monospace;
-        font-weight:500;
-        color:var(--ink);
+        font-family:var(--font-mono);
+        font-weight:600;
+        color:var(--navy);
     }
 
-    /* ---------- FIXED-SIZE SCROLLABLE TREND LIST ---------- */
+    /* ---------- SCROLLABLE TREND LIST ---------- */
     .trend-list{
         max-height:380px;
         overflow-y:auto;
         padding-right:8px;
         margin-right:-8px;
         scrollbar-width:thin;
-        scrollbar-color:var(--brass) var(--paper-dim);
+        scrollbar-color:var(--marigold) var(--paper-dark);
     }
-    .trend-list::-webkit-scrollbar{
-        width:7px;
-    }
+    .trend-list::-webkit-scrollbar{ width:7px; }
     .trend-list::-webkit-scrollbar-track{
-        background:var(--paper-dim);
+        background:var(--paper-dark);
         border-radius:6px;
     }
     .trend-list::-webkit-scrollbar-thumb{
-        background:var(--brass);
+        background:var(--marigold);
         border-radius:6px;
     }
-    .trend-list::-webkit-scrollbar-thumb:hover{
-        background:var(--ink-soft);
-    }
+    .trend-list::-webkit-scrollbar-thumb:hover{ background:var(--navy); }
     .trend-list .trend-card:last-child{ margin-bottom:2px; }
 
     /* ---------- ACTIONS ---------- */
@@ -282,49 +387,77 @@
         align-items:center;
         gap:8px;
         padding:12px 22px;
-        background:var(--ink);
+        background:var(--navy);
         color:var(--paper);
-        border-radius:6px;
+        border-radius:3px;
         font-size:13.5px;
-        font-weight:500;
+        font-weight:600;
+        font-family:var(--font-body);
         text-decoration:none;
+        border:1px solid var(--navy);
         transition:background 0.2s, transform 0.15s;
     }
-    .btn:hover{ background:var(--slate); }
+    .btn:hover{ background:var(--navy-deep); }
     .btn:active{ transform:scale(0.98); }
     .btn-secondary{
         background:transparent;
-        color:var(--ink);
+        color:var(--navy);
         border:1.5px solid var(--line);
     }
-    .btn-secondary:hover{ background:var(--paper-dim); }
+    .btn-secondary:hover{ background:var(--paper-dark); border-color:var(--navy); }
+
+    footer.gazette-footer{
+        text-align:center;
+        font-family:var(--font-mono);
+        font-size:11px;
+        color:var(--ink-soft);
+        padding:24px 20px 40px;
+        letter-spacing:0.03em;
+    }
     </style>
 </head>
 <body class="page-animate">
-    <nav class="navbar">
-        <h1>Price Benchmarking System</h1>
-        <div class="user-info">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/predict">Predict Price</a>
-            <a href="/history">History</a>
-            <a href="/logout">Logout</a>
+    <div class="gazette-masthead">
+        <div class="masthead-strip">
+            <span>Government Procurement &middot; Price Intelligence Unit</span>
+            <span>Session Active</span>
         </div>
-    </nav>
+        <div class="masthead-main">
+            <div class="masthead-title">
+                <div class="seal-mark">PBS</div>
+                <h1>Price Benchmarking System</h1>
+            </div>
+            <nav class="masthead-nav">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/predict">Predict Price</a>
+                <a href="/trends" class="active">Trends</a>
+                <a href="/history">History</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </div>
 
     <div class="container">
-        <div class="card">
-            <h2>&#128202; Market Trends &amp; Analytics</h2>
+        <span class="page-kicker">Section 05 &middot; Market Intelligence</span>
+        <h2 class="page-heading">Market Trends &amp; Analytics</h2>
 
+        <div class="card">
+            <div class="section-header" style="border:none; margin:0 0 16px; padding:0;">
+                <h2 style="font-size:15px;"><span class="sec-no">01</span> At a Glance</h2>
+            </div>
             <div class="stats-row">
                 <div class="stat-box" data-tooltip="Number of product categories analyzed">
+                    <span class="watermark">C</span>
                     <div class="label">Total Categories</div>
                     <div class="value">{{ trends.category_trends|length }}</div>
                 </div>
                 <div class="stat-box" data-tooltip="Geographic locations covered in data">
+                    <span class="watermark">L</span>
                     <div class="label">Locations Analyzed</div>
                     <div class="value">{{ trends.location_analysis|length }}</div>
                 </div>
                 <div class="stat-box" data-tooltip="Vendors tracked in the system">
+                    <span class="watermark">V</span>
                     <div class="label">Vendors Tracked</div>
                     <div class="value">{{ trends.vendor_analysis|length }}</div>
                 </div>
@@ -332,15 +465,16 @@
         </div>
 
         <div class="trends-grid">
-            <div class="card" style="grid-column: 1 / -1;">
-                <h2>&#128202; Category Price Analysis</h2>
+            <div class="card">
+                <h2><span class="sec-no">02</span> Category Price Analysis</h2>
                 <div style="height: 400px;">
                     <canvas id="categoryBarChart"></canvas>
                 </div>
             </div>
 
+            <div class="trends-row">
             <div class="card">
-                <h2>&#128194; Category Details</h2>
+                <h2><span class="sec-no">03</span> Category Details</h2>
                 <div class="trend-list">
                 {% for category, data in trends.category_trends.items() %}
                 <div class="trend-card">
@@ -372,7 +506,7 @@
             </div>
 
             <div class="card">
-                <h2>&#128205; Location Analysis</h2>
+                <h2><span class="sec-no">04</span> Location Analysis</h2>
                 <div style="height: 350px; margin-bottom: 20px;">
                     <canvas id="locationLineChart"></canvas>
                 </div>
@@ -400,7 +534,7 @@
             </div>
 
             <div class="card">
-                <h2>&#128188; Vendor Analysis</h2>
+                <h2><span class="sec-no">05</span> Vendor Analysis</h2>
                 <div style="height: 350px; margin-bottom: 20px;">
                     <canvas id="vendorDoughnutChart"></canvas>
                 </div>
@@ -432,6 +566,7 @@
                 {% endfor %}
                 </div>
             </div>
+            </div>
         </div>
 
         <div class="actions">
@@ -439,6 +574,10 @@
             <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
+
+    <footer class="gazette-footer">
+        Price Benchmarking System &middot; Government Procurement Price Intelligence Unit
+    </footer>
 
     <script src="/static/js/app.js"></script>
     <script>

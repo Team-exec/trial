@@ -5,76 +5,755 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Benchmarking System - Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body class="page-animate">
-    <nav class="navbar">
-        <h1>Price Benchmarking System</h1>
-        <div class="user-info">
-            <span>Welcome, {{ username }}</span>
-            <a href="/predict">Predict Price</a>
-            <a href="/trends">Market Trends</a>
-            <a href="/history">History</a>
-            <a href="/logout">Logout</a>
-        </div>
-    </nav>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1a3c78;
+            --navy-deep: #12294f;
+            --steel: #2C4A6E;
+            --paper: #F6F3EC;
+            --paper-dark: #EFEADD;
+            --ink: #201E1A;
+            --ink-soft: #5C574C;
+            --marigold: #B8730E;
+            --marigold-light: #E4A339;
+            --line: #DAD3C1;
+            --success: #2E6B3E;
+            --white: #FFFFFF;
+            --font-display: 'Source Serif 4', Georgia, serif;
+            --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
 
-    <div class="container">
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--font-body);
+        }
+
+        /* ===== Masthead ===== */
+        .gazette-masthead {
+            background: var(--navy);
+            color: var(--paper);
+            position: relative;
+            border-bottom: 3px solid var(--marigold);
+        }
+
+        .masthead-strip {
+            background: var(--navy-deep);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(246,243,236,0.6);
+            padding: 6px 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .masthead-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 34px 30px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .masthead-title {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .seal-mark {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 1.5px solid var(--marigold-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            color: var(--marigold-light);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .seal-mark::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed rgba(228,163,57,0.5);
+            border-radius: 50%;
+        }
+
+        .masthead-title h1 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 26px;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .masthead-title .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--marigold-light);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .masthead-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .masthead-nav a {
+            color: rgba(246,243,236,0.78);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 9px 16px;
+            border-radius: 3px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .masthead-nav a:hover {
+            background: rgba(246,243,236,0.08);
+            color: var(--paper);
+        }
+
+        .masthead-nav .user-chip {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--marigold-light);
+            padding: 9px 14px 9px 0;
+            border-right: 1px solid rgba(246,243,236,0.2);
+            margin-right: 6px;
+        }
+
+        /* ===== Hero / Certificate strip ===== */
+        .hero-banner {
+            background: var(--white);
+            border-bottom: 1px solid var(--line);
+            padding: 0;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 38px 30px;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-text .kicker {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--marigold);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .hero-text h2 {
+            font-family: var(--font-display);
+            font-size: 27px;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 0 0 12px;
+            line-height: 1.25;
+        }
+
+        .hero-text p {
+            color: var(--ink-soft);
+            font-size: 14.5px;
+            line-height: 1.65;
+            max-width: 480px;
+            margin: 0;
+        }
+
+        .cert-seal {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            border-left: 1px dashed var(--line);
+            padding-left: 30px;
+        }
+
+        .cert-ring {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            border: 2px solid var(--navy);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .cert-ring::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border-radius: 50%;
+            border: 1px dashed var(--marigold);
+        }
+
+        .cert-ring .cert-num {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 21px;
+            color: var(--navy);
+            line-height: 1;
+        }
+
+        .cert-ring .cert-unit {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        .cert-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            line-height: 1.7;
+            color: var(--ink-soft);
+        }
+
+        .cert-label strong {
+            display: block;
+            color: var(--navy);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .dash-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* ===== Section headers, ledger style ===== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 46px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section-header h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 17px;
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .section-header h3 .sec-no {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--marigold);
+            font-weight: 600;
+        }
+
+        .section-header a {
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .section-header a:hover { color: var(--marigold); }
+
+        /* ===== Stat plates ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--line);
+            border: 1px solid var(--line);
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 22px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card .stat-watermark {
+            position: absolute;
+            right: 8px;
+            top: -6px;
+            font-family: var(--font-display);
+            font-size: 64px;
+            font-weight: 600;
+            color: var(--paper-dark);
+            z-index: 0;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .stat-card > * { position: relative; z-index: 1; }
+
+        .stat-card .stat-icon {
+            font-size: 18px;
+            margin-bottom: 14px;
+            opacity: 0.85;
+        }
+
+        .stat-card .stat-label {
+            color: var(--ink-soft);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 8px;
+            font-family: var(--font-mono);
+        }
+
+        .stat-card .stat-value {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .stat-card .stat-sub {
+            font-size: 11.5px;
+            color: var(--ink-soft);
+            margin-top: 6px;
+        }
+
+        .stat-card:nth-child(1) { border-top: 3px solid var(--navy); }
+        .stat-card:nth-child(2) { border-top: 3px solid var(--steel); }
+        .stat-card:nth-child(3) { border-top: 3px solid var(--marigold); }
+        .stat-card:nth-child(4) { border-top: 3px solid var(--success); }
+
+        /* ===== Quick actions ===== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 18px 16px;
+            text-align: left;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s, transform 0.15s;
+            cursor: pointer;
+            display: block;
+        }
+
+        .quick-action:hover {
+            border-color: var(--navy);
+            transform: translateY(-2px);
+        }
+
+        .quick-action .qa-icon {
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .quick-action .qa-label {
+            font-size: 13.5px;
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .quick-action .qa-desc {
+            font-size: 11.5px;
+            color: var(--ink-soft);
+            margin-top: 4px;
+        }
+
+        /* ===== Feature ledger rows ===== */
+        .action-grid {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .action-card {
+            text-decoration: none;
+            color: inherit;
+            display: grid;
+            grid-template-columns: 44px 1fr 20px;
+            gap: 20px;
+            align-items: center;
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--line);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-card:last-child { border-bottom: none; }
+
+        .action-card:hover { background: var(--paper); }
+
+        .action-card .card-no {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--marigold);
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-card .card-body h3 {
+            font-family: var(--font-body);
+            color: var(--navy);
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0 0 5px;
+        }
+
+        .action-card .card-body p {
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.55;
+            margin: 0;
+            max-width: 640px;
+        }
+
+        .action-card .arrow {
+            color: var(--line);
+            font-size: 16px;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .action-card:hover .arrow {
+            color: var(--marigold);
+            transform: translateX(3px);
+        }
+
+        /* ===== Info panels ===== */
+        .info-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .info-card {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 24px 26px;
+        }
+
+        .info-card h4 {
+            font-family: var(--font-display);
+            color: var(--navy);
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0 0 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            counter-reset: step;
+        }
+
+        .info-card.steps li {
+            counter-increment: step;
+            padding: 9px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .info-card.steps li::before {
+            content: counter(step, decimal-leading-zero);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--marigold);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .info-card.metrics li {
+            padding: 9px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--ink-soft);
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .info-card.metrics li:last-child { border-bottom: none; }
+
+        .info-card.metrics li .metric-val {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        footer.gazette-footer {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--ink-soft);
+            padding: 24px 20px 40px;
+            letter-spacing: 0.03em;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .info-cards { grid-template-columns: 1fr; }
+            .hero-content { grid-template-columns: 1fr; }
+            .cert-seal { justify-self: start; border-left: none; padding-left: 0; border-top: 1px dashed var(--line); padding-top: 20px; }
+            .masthead-nav .user-chip { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr; }
+            .action-card { grid-template-columns: 36px 1fr; }
+            .action-card .arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gazette-masthead">
+        <div class="masthead-strip">
+            <span>Government Procurement &middot; Price Intelligence Unit</span>
+            <span>Session Active</span>
+        </div>
+        <div class="masthead-main">
+            <div class="masthead-title">
+                <div class="seal-mark">PBS</div>
+                <div>
+                    <span class="eyebrow">Official Dashboard</span>
+                    <h1>Price Benchmarking System</h1>
+                </div>
+            </div>
+            <nav class="masthead-nav">
+                <span class="user-chip">&#128100; {{ username }}</span>
+                <a href="/predict">Predict</a>
+                <a href="/trends">Trends</a>
+                <a href="/history">History</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="kicker">Welcome back</span>
+                <h2>{{ username }}, your procurement desk is ready.</h2>
+                <p>AI-assisted price benchmarking for public procurement. Generate defensible price estimates, track market movement, and flag vendor quotes that fall outside a reasonable range.</p>
+            </div>
+            <div class="cert-seal">
+                <div class="cert-ring">
+                    <div class="cert-num">95%</div>
+                    <div class="cert-unit">ACCURACY</div>
+                </div>
+                <div class="cert-label">
+                    <strong>{{ stats.total_products + stats.total_services }}</strong>
+                    Verified records on file, benchmarked against live market data.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-container">
+        <div class="section-header">
+            <h3><span class="sec-no">01</span> Overview</h3>
+        </div>
+
         <div class="stats-grid">
             <div class="stat-card" data-tooltip="Total product entries in database">
-                <span class="icon">&#128230;</span>
-                <h3>Total Products</h3>
-                <div class="value">{{ stats.total_products }}</div>
+                <span class="stat-watermark">P</span>
+                <div class="stat-icon">&#128230;</div>
+                <div class="stat-label">Total Products</div>
+                <div class="stat-value">{{ stats.total_products }}</div>
+                <div class="stat-sub">Across all categories</div>
             </div>
             <div class="stat-card" data-tooltip="Total service entries in database">
-                <span class="icon">&#128188;</span>
-                <h3>Total Services</h3>
-                <div class="value">{{ stats.total_services }}</div>
+                <span class="stat-watermark">S</span>
+                <div class="stat-icon">&#128188;</div>
+                <div class="stat-label">Total Services</div>
+                <div class="stat-value">{{ stats.total_services }}</div>
+                <div class="stat-sub">Service contracts</div>
             </div>
             <div class="stat-card" data-tooltip="Number of unique product categories">
-                <span class="icon">&#128196;</span>
-                <h3>Product Categories</h3>
-                <div class="value">{{ stats.categories }}</div>
+                <span class="stat-watermark">C</span>
+                <div class="stat-icon">&#128196;</div>
+                <div class="stat-label">Categories</div>
+                <div class="stat-value">{{ stats.categories }}</div>
+                <div class="stat-sub">Product types</div>
             </div>
             <div class="stat-card" data-tooltip="Geographic locations covered">
-                <span class="icon">&#128205;</span>
-                <h3>Locations Covered</h3>
-                <div class="value">{{ stats.locations }}</div>
+                <span class="stat-watermark">L</span>
+                <div class="stat-icon">&#128205;</div>
+                <div class="stat-label">Locations</div>
+                <div class="stat-value">{{ stats.locations }}</div>
+                <div class="stat-sub">Cities covered</div>
             </div>
+        </div>
+
+        <div class="section-header">
+            <h3><span class="sec-no">02</span> Quick Actions</h3>
+        </div>
+
+        <div class="quick-actions">
+            <a href="/predict" class="quick-action">
+                <span class="qa-icon">&#128269;</span>
+                <div class="qa-label">New Prediction</div>
+                <div class="qa-desc">Start a price estimate</div>
+            </a>
+            <a href="/trends" class="quick-action">
+                <span class="qa-icon">&#128202;</span>
+                <div class="qa-label">View Trends</div>
+                <div class="qa-desc">Analyze market data</div>
+            </a>
+            <a href="/history" class="quick-action">
+                <span class="qa-icon">&#128203;</span>
+                <div class="qa-label">Past Queries</div>
+                <div class="qa-desc">Review history</div>
+            </a>
+            <a href="/predict" class="quick-action">
+                <span class="qa-icon">&#128176;</span>
+                <div class="qa-label">Check Price</div>
+                <div class="qa-desc">Verify reasonability</div>
+            </a>
+        </div>
+
+        <div class="section-header">
+            <h3><span class="sec-no">03</span> Features</h3>
+            <a href="/predict">Explore all &rarr;</a>
         </div>
 
         <div class="action-grid">
             <a href="/predict" class="action-card">
-                <span class="icon">&#128269;</span>
-                <h3>Predict Price</h3>
-                <p>Get AI-powered price predictions for products and services based on specifications and market data.</p>
+                <div class="card-no">01</div>
+                <div class="card-body">
+                    <h3>AI Price Prediction</h3>
+                    <p>Get ML-powered price predictions for products and services. Input specifications and receive accurate market-based estimates with confidence scores.</p>
+                </div>
+                <div class="arrow">&rarr;</div>
             </a>
 
             <a href="/trends" class="action-card">
-                <span class="icon">&#128202;</span>
-                <h3>Market Trends</h3>
-                <p>Analyze market trends, vendor performance, and regional price variations across categories.</p>
+                <div class="card-no">02</div>
+                <div class="card-body">
+                    <h3>Market Analytics</h3>
+                    <p>Interactive charts showing category trends, vendor performance, and regional price variations across 15 cities and 10+ product categories.</p>
+                </div>
+                <div class="arrow">&rarr;</div>
             </a>
 
             <a href="/history" class="action-card">
-                <span class="icon">&#128203;</span>
-                <h3>Query History</h3>
-                <p>View your past price predictions and recommendations for reference and comparison.</p>
+                <div class="card-no">03</div>
+                <div class="card-body">
+                    <h3>Query History</h3>
+                    <p>Track all your past predictions with sortable tables, search filters, and CSV export. Compare results and refine your procurement strategy.</p>
+                </div>
+                <div class="arrow">&rarr;</div>
             </a>
 
-            <div class="action-card" onclick="document.querySelector('.toast-container') && PBApp.Toast.info('Use Predict Price to check reasonability.')">
-                <span class="icon">&#128161;</span>
-                <h3>Price Reasonability</h3>
-                <p>Verify if quoted prices are reasonable based on historical data and AI analysis.</p>
+            <div class="action-card" onclick="PBApp.Toast.info('Navigate to Predict Price and review the reasonability assessment after prediction.')">
+                <div class="card-no">04</div>
+                <div class="card-body">
+                    <h3>Price Validation</h3>
+                    <p>Verify if quoted vendor prices are reasonable. Our AI cross-references historical data, market trends, and bulk pricing to flag anomalies.</p>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h3><span class="sec-no">04</span> Reference</h3>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card steps">
+                <h4>How It Works</h4>
+                <ul>
+                    <li>Select product or service category</li>
+                    <li>Enter specifications and location</li>
+                    <li>AI model analyzes market data</li>
+                    <li>Get predicted price with confidence</li>
+                    <li>Review recommendations &amp; suggestions</li>
+                </ul>
+            </div>
+            <div class="info-card metrics">
+                <h4>System Info</h4>
+                <ul>
+                    <li>Model Accuracy (Products) <span class="metric-val">95.4%</span></li>
+                    <li>Model Accuracy (Services) <span class="metric-val">87.7%</span></li>
+                    <li>Product records on file <span class="metric-val">{{ stats.total_products }}</span></li>
+                    <li>Service records on file <span class="metric-val">{{ stats.total_services }}</span></li>
+                    <li>Coverage <span class="metric-val">{{ stats.locations }} cities &middot; {{ stats.categories }} categories</span></li>
+                </ul>
             </div>
         </div>
     </div>
+
+    <footer class="gazette-footer">
+        Price Benchmarking System &middot; Government Procurement Price Intelligence Unit
+    </footer>
 
     <script src="/static/js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 PBApp.Toast.success('Welcome back, {{ username }}!');
-            }, 500);
+            }, 600);
         });
     </script>
 </body>

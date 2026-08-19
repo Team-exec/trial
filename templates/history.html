@@ -4,22 +4,343 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Benchmarking System - Query History</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+    :root{
+        --navy:#1a3c78;
+        --navy-deep:#12294f;
+        --steel:#2C4A6E;
+        --paper:#F6F3EC;
+        --paper-dark:#EFEADD;
+        --ink:#201E1A;
+        --ink-soft:#5C574C;
+        --marigold:#B8730E;
+        --marigold-light:#E4A339;
+        --line:#DAD3C1;
+        --success:#2E6B3E;
+        --danger:#a8402f;
+        --white:#FFFFFF;
+        --font-display:'Source Serif 4', Georgia, serif;
+        --font-body:'IBM Plex Sans', system-ui, sans-serif;
+        --font-mono:'IBM Plex Mono', monospace;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{
+        font-family:var(--font-body);
+        background:var(--paper);
+        color:var(--ink);
+        min-height:100vh;
+    }
+    @media (prefers-reduced-motion: reduce){
+        *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+    }
+
+    /* ===== MASTHEAD ===== */
+    .gazette-masthead{
+        background:var(--navy);
+        border-bottom:3px solid var(--marigold);
+        position:sticky;
+        top:0;
+        z-index:20;
+    }
+    .masthead-strip{
+        background:var(--navy-deep);
+        font-family:var(--font-mono);
+        font-size:11px;
+        letter-spacing:0.08em;
+        text-transform:uppercase;
+        color:rgba(246,243,236,0.6);
+        padding:6px 30px;
+        display:flex;
+        justify-content:space-between;
+    }
+    .masthead-main{
+        max-width:1240px;
+        margin:0 auto;
+        padding:16px 30px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        flex-wrap:wrap;
+        gap:16px;
+    }
+    .masthead-title{ display:flex; align-items:center; gap:14px; }
+    .seal-mark{
+        width:38px; height:38px;
+        border-radius:50%;
+        border:1.5px solid var(--marigold-light);
+        display:flex; align-items:center; justify-content:center;
+        font-family:var(--font-mono);
+        font-size:10px;
+        color:var(--marigold-light);
+        flex-shrink:0;
+        position:relative;
+    }
+    .seal-mark::before{
+        content:''; position:absolute; inset:4px;
+        border:1px dashed rgba(228,163,57,0.5);
+        border-radius:50%;
+    }
+    .masthead-title h1{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:19px;
+        color:var(--paper);
+        letter-spacing:-0.01em;
+    }
+    .masthead-nav{ display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
+    .masthead-nav a{
+        color:rgba(246,243,236,0.78);
+        text-decoration:none;
+        font-size:13px;
+        font-weight:500;
+        padding:9px 16px;
+        border-radius:3px;
+        transition:background 0.2s, color 0.2s;
+    }
+    .masthead-nav a:hover{ background:rgba(246,243,236,0.08); color:var(--paper); }
+    .masthead-nav a.active{ color:var(--marigold-light); }
+    .masthead-nav a.logout-link{ color:rgba(246,243,236,0.5); }
+
+    /* ===== LAYOUT ===== */
+    .container{
+        max-width:1240px;
+        margin:0 auto;
+        padding:36px 30px 60px;
+    }
+    .page-kicker{
+        font-family:var(--font-mono);
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:0.1em;
+        color:var(--marigold);
+        display:block;
+        margin-bottom:8px;
+    }
+    .page-heading{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:27px;
+        color:var(--navy);
+        margin-bottom:26px;
+    }
+
+    .card{
+        background:var(--white);
+        border:1px solid var(--line);
+        border-radius:4px;
+        padding:26px 28px;
+        margin-bottom:24px;
+    }
+    .card > h2{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:17px;
+        color:var(--navy);
+        margin-bottom:20px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--line);
+        display:flex;
+        align-items:center;
+        gap:9px;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar{
+        display:flex;
+        gap:14px;
+        margin-bottom:20px;
+        align-items:center;
+        flex-wrap:wrap;
+    }
+    .filter-bar input{
+        flex:1;
+        min-width:220px;
+        padding:10px 14px;
+        border:1px solid var(--line);
+        border-radius:3px;
+        font-size:13px;
+        font-family:var(--font-body);
+        color:var(--ink);
+        background:var(--paper);
+        transition:border-color 0.2s, box-shadow 0.2s;
+    }
+    .filter-bar input:focus{
+        outline:none;
+        border-color:var(--navy);
+        box-shadow:0 0 0 3px rgba(26,60,120,0.1);
+        background:var(--white);
+    }
+    .filter-bar input::placeholder{ color:#9b9583; }
+
+    .btn{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:12px 22px;
+        background:var(--navy);
+        color:var(--paper);
+        border:1px solid var(--navy);
+        border-radius:3px;
+        font-size:13.5px;
+        font-weight:600;
+        font-family:var(--font-body);
+        text-decoration:none;
+        cursor:pointer;
+        transition:background 0.2s, transform 0.15s;
+    }
+    .btn:hover{ background:var(--navy-deep); }
+    .btn:active{ transform:scale(0.98); }
+    .btn-sm{ padding:9px 16px; font-size:12.5px; white-space:nowrap; }
+    .btn-secondary{
+        background:transparent;
+        color:var(--navy);
+        border:1.5px solid var(--line);
+    }
+    .btn-secondary:hover{ background:var(--paper-dark); border-color:var(--navy); }
+
+    /* ===== TABLE ===== */
+    .table-container{
+        overflow-x:auto;
+        border:1px solid var(--line);
+        border-radius:4px;
+    }
+    .history-table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+        min-width:640px;
+    }
+    .history-table thead th{
+        text-align:left;
+        font-family:var(--font-mono);
+        font-size:10.5px;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+        color:var(--ink-soft);
+        padding:12px 16px;
+        border-bottom:2px solid var(--line);
+        background:var(--paper-dark);
+        white-space:nowrap;
+    }
+    .history-table tbody td{
+        padding:12px 16px;
+        border-bottom:1px solid var(--line);
+        color:var(--ink);
+    }
+    .history-table tbody tr:last-child td{ border-bottom:none; }
+    .history-table tbody tr{ transition:background 0.15s, opacity 0.15s; }
+    .history-table tbody tr:hover{ background:var(--paper); }
+    .sort-icon{ color:var(--marigold); font-size:10px; margin-left:3px; }
+
+    /* ===== BADGES ===== */
+    .badge{
+        display:inline-block;
+        font-family:var(--font-mono);
+        font-size:10.5px;
+        font-weight:600;
+        text-transform:uppercase;
+        letter-spacing:0.04em;
+        padding:4px 10px;
+        border-radius:3px;
+        border:1px solid transparent;
+    }
+    .badge-product{
+        background:rgba(26,60,120,0.08);
+        color:var(--navy);
+        border-color:rgba(26,60,120,0.2);
+    }
+    .badge-service{
+        background:rgba(184,115,14,0.1);
+        color:var(--marigold);
+        border-color:rgba(184,115,14,0.25);
+    }
+
+    /* ===== EMPTY STATES ===== */
+    .filter-empty{
+        text-align:center;
+        padding:36px 20px;
+        color:var(--ink-soft);
+        font-size:13.5px;
+    }
+    .empty-state{
+        text-align:center;
+        padding:56px 20px;
+    }
+    .empty-state .icon{
+        font-size:38px;
+        display:block;
+        margin-bottom:16px;
+        opacity:0.5;
+    }
+    .empty-state h3{
+        font-family:var(--font-display);
+        font-weight:600;
+        font-size:18px;
+        color:var(--navy);
+        margin-bottom:8px;
+    }
+    .empty-state p{
+        font-size:13.5px;
+        color:var(--ink-soft);
+        max-width:400px;
+        margin:0 auto;
+        line-height:1.6;
+    }
+
+    /* ===== PAGE ACTIONS ===== */
+    .actions{
+        display:flex;
+        gap:14px;
+        flex-wrap:wrap;
+    }
+
+    footer.gazette-footer{
+        text-align:center;
+        font-family:var(--font-mono);
+        font-size:11px;
+        color:var(--ink-soft);
+        padding:24px 20px 40px;
+        letter-spacing:0.03em;
+    }
+
+    @media (max-width: 900px){
+        .container{ padding:24px 18px 48px; }
+        .masthead-main{ padding:14px 18px; }
+        .filter-bar{ flex-direction:column; align-items:stretch; }
+        .filter-bar input{ min-width:0; }
+    }
+    </style>
 </head>
 <body class="page-animate">
-    <nav class="navbar">
-        <h1>Price Benchmarking System</h1>
-        <div class="user-info">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/predict">Predict Price</a>
-            <a href="/trends">Market Trends</a>
-            <a href="/logout">Logout</a>
+    <div class="gazette-masthead">
+        <div class="masthead-strip">
+            <span>Government Procurement &middot; Price Intelligence Unit</span>
+            <span>Session Active</span>
         </div>
-    </nav>
+        <div class="masthead-main">
+            <div class="masthead-title">
+                <div class="seal-mark">PBS</div>
+                <h1>Price Benchmarking System</h1>
+            </div>
+            <nav class="masthead-nav">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/predict">Predict Price</a>
+                <a href="/trends">Market Trends</a>
+                <a href="/history" class="active">History</a>
+                <a href="/logout" class="logout-link">Logout</a>
+            </nav>
+        </div>
+    </div>
 
     <div class="container">
+        <span class="page-kicker">Section 07 &middot; Records &amp; Filings</span>
+        <h2 class="page-heading">Query History</h2>
+
         <div class="card">
-            <h2>&#128203; Query History</h2>
+            <h2>&#128203; Past Predictions</h2>
 
             {% if history %}
             <div class="filter-bar">
@@ -50,7 +371,7 @@
                             <td>{{ entry.location }}</td>
                             <td>&#8377;{{ "{:,.2f}".format(entry.price) }}</td>
                             <td data-tooltip="Confidence: {{ entry.confidence }}%">
-                                <span style="color: {% if entry.confidence|float > 80 %}#2e7d32{% elif entry.confidence|float > 60 %}#e65100{% else %}#c62828{% endif %}; font-weight: 500;">
+                                <span style="color: {% if entry.confidence|float > 80 %}var(--success){% elif entry.confidence|float > 60 %}var(--marigold){% else %}var(--danger){% endif %}; font-weight: 600;">
                                     {{ entry.confidence }}%
                                 </span>
                             </td>
@@ -60,7 +381,7 @@
                 </table>
             </div>
 
-            <div class="filter-empty" style="display: none; text-align: center; padding: 30px; color: #666;">
+            <div class="filter-empty" style="display: none;">
                 <p>No results match your search.</p>
             </div>
             {% else %}
@@ -77,6 +398,10 @@
             <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
+
+    <footer class="gazette-footer">
+        Price Benchmarking System &middot; Government Procurement Price Intelligence Unit
+    </footer>
 
     <script src="/static/js/app.js"></script>
     <script>
